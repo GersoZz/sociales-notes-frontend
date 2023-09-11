@@ -21,7 +21,7 @@ module.exports = {
     },
     {
       extends: ['plugin:@typescript-eslint/disable-type-checked'],
-      files: ['./**/*.cjs']
+      files: ['./**/*.cjs', 'tailwind.config.ts', 'postcss.config.js', 'vite.config.ts']
     }
   ],
   parserOptions: {
