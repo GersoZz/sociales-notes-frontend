@@ -1,8 +1,7 @@
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
 import { type SubmitHandler, useForm } from 'react-hook-form'
-import { AxiosError } from 'axios'
 import { useAuth } from '../hooks/useAuth'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 interface RegisterInputs {
   username: string
@@ -17,36 +16,12 @@ export const RegisterPage: React.FC = () => {
     formState: { errors }
   } = useForm<RegisterInputs>()
 
-  const { signup, isAuthenticated } = useAuth()
+  const { signup, isAuthenticated, errors: axiosErrors } = useAuth()
 
-  const [axiosErrors, setAxiosErrors] = useState<string[]>([])
   const navigate = useNavigate()
 
   const onSubmit: SubmitHandler<RegisterInputs> = async (data) => {
-    try {
-      console.log(data)
-      await signup(data)
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        const data = error?.response?.data
-
-        // q necesidad de manejar los errores en el contexto ?
-        console.log('🚀 ~ file: data:', data)
-        if (data.data.type === 'ZodError') {
-          const axiosErrorArr = data.data.message.map((e: any) => {
-            return e.message
-          })
-          console.log('🚀 ~ file: axiosErrorArr:', axiosErrorArr)
-
-          setAxiosErrors(axiosErrorArr)
-        } else {
-          console.log([data.data.message])
-          setAxiosErrors([data.data.message])
-        }
-      } else {
-        console.log(error) // un error que no es de axios
-      }
-    }
+    await signup(data)
   }
 
   useEffect(() => {
@@ -54,48 +29,63 @@ export const RegisterPage: React.FC = () => {
   }, [isAuthenticated])
 
   return (
-    <div className="bg-zinc-800 max-w-md p-10 rounded-md">
-      {axiosErrors.length > 0 && (
-        <ul className="list-decimal">
-          {axiosErrors.map((e, id) => {
-            return (
-              <li className="text-red-500" key={id}>
-                {e}
-              </li>
-            )
-          })}
-        </ul>
-      )}
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <input
-          type="text"
-          {...register('username', { required: true })}
-          className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md my-2"
-          placeholder="Username"
-        />
-        {errors.username !== undefined && (
-          <p className="text-red-500">Username is required</p>
+    <div className="h-[calc(100vh-100px)] flex items-center justify-center">
+      <div className="bg-zinc-800 max-w-md w-full p-10 rounded-md">
+        {axiosErrors.length > 0 && (
+          <ul className="list-decimal">
+            {axiosErrors.map((err, id) => {
+              return (
+                <li className="text-red-500" key={id}>
+                  {err}
+                </li>
+              )
+            })}
+          </ul>
         )}
-        <input
-          type="email"
-          {...register('email', { required: true })}
-          className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md my-2"
-          placeholder="Email"
-        />
-        {errors.email !== undefined && (
-          <p className="text-red-500">Email is required</p>
-        )}
-        <input
-          type="password"
-          {...register('password', { required: true })}
-          className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md my-2"
-          placeholder="Password"
-        />
-        {errors.password !== undefined && (
-          <p className="text-red-500">Password is required</p>
-        )}
-        <button type="submit">Register</button>
-      </form>
+        <h1 className="text-2xl font-bold">Register</h1>
+
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <input
+            type="text"
+            {...register('username', { required: true })}
+            className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md my-2"
+            placeholder="Username"
+          />
+          {errors.username !== undefined && (
+            <p className="text-red-500">Username is required</p>
+          )}
+          <input
+            type="email"
+            {...register('email', { required: true })}
+            className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md my-2"
+            placeholder="Email"
+          />
+          {errors.email !== undefined && (
+            <p className="text-red-500">Email is required</p>
+          )}
+          <input
+            type="password"
+            {...register('password', { required: true })}
+            className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md my-2"
+            placeholder="Password"
+          />
+          {errors.password !== undefined && (
+            <p className="text-red-500">Password is required</p>
+          )}
+          <button
+            className="bg-indigo-500 px-4 py-1 rounded-md my-2 disabled:bg-indigo-300"
+            type="submit"
+          >
+            Register
+          </button>
+        </form>
+        <p className="flex gap-x-2 justify-between">
+          Already Have an Account?
+          <Link to="/signin" className="text-sky-500">
+            Sign In
+          </Link>
+        </p>
+      </div>
     </div>
   )
 }

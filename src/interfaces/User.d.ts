@@ -4,6 +4,11 @@ export interface userSignUp {
   password: string
 }
 
+export interface userSignIn {
+  email: string
+  password: string
+}
+
 export interface IUser {
   id: string
   username: string
