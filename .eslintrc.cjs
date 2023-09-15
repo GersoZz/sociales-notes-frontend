@@ -32,6 +32,8 @@ module.exports = {
     'react'
   ],
   rules: {
-    'react/react-in-jsx-scope': 'off'
+    'react/react-in-jsx-scope': 'off',
+    '@typescript-eslint/no-misused-promises': 'off'
+    // '@typescript-eslint/no-unused-vars': 'warning'
   }
 }
