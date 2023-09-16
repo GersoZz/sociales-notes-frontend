@@ -10,6 +10,7 @@ import {
 
 export interface NoteContextType {
   notes: INote[]
+  setNotes: React.Dispatch<React.SetStateAction<INote[]>>
   getNotes: () => Promise<void>
   createNote: (note: NoteInput) => Promise<void>
   getNote: (id: string) => Promise<void>
@@ -19,6 +20,7 @@ export interface NoteContextType {
 
 export const NotesContext = createContext<NoteContextType>({
   notes: [],
+  setNotes: () => {},
   getNotes: async () => {},
   createNote: async () => {},
   getNote: async () => {},
@@ -87,7 +89,7 @@ export const NotesProvider: React.FC<Props> = ({ children }: Props) => {
 
   return (
     <NotesContext.Provider
-      value={{ notes, getNotes, createNote, getNote, updateNote, deleteNote }}
+      value={{ notes, setNotes, getNotes, createNote, getNote, updateNote, deleteNote }}
     >
       {children}
     </NotesContext.Provider>

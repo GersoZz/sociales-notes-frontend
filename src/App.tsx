@@ -7,12 +7,14 @@ import { ProtectedRoute } from './components/ProtectedRoute'
 import { NotesPage } from './pages/NotesPage'
 import { NoteFormPage } from './pages/NoteFormPage'
 import { NotesProvider } from './context/NotesContext'
+import { Navbar } from './components/NavBar'
 
 function App (): JSX.Element {
   return (
     <NotesProvider>
       <AuthProvider>
         <BrowserRouter>
+        <Navbar/>
           <Routes>
             <Route path='/' element= {<h1 className='text-4xl font-bold'>Home Page</h1>}></Route>
             <Route path='/signup' element= {<RegisterPage/>}></Route>

@@ -5,6 +5,6 @@ export const ProtectedRoute: React.FC = () => {
   const { isAuthenticated, loadingVerify } = useAuth()
 
   if (loadingVerify) return <h1>Loading...</h1>
-  if (!isAuthenticated && !loadingVerify) return <Navigate to="/login" replace />
+  if (!isAuthenticated && !loadingVerify) return <Navigate to="/signin" replace />
   return <Outlet />
 }
