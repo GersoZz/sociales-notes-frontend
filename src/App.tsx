@@ -14,7 +14,8 @@ function App (): JSX.Element {
     <NotesProvider>
       <AuthProvider>
         <BrowserRouter>
-        <Navbar/>
+          <main className="container content-container mx-auto px-10 md:px-0">
+          <Navbar/>
           <Routes>
             <Route path='/' element= {<h1 className='text-4xl font-bold'>Home Page</h1>}></Route>
             <Route path='/signup' element= {<RegisterPage/>}></Route>
@@ -26,6 +27,7 @@ function App (): JSX.Element {
               <Route path='/profile' element= {<h1 className='text-4xl font-bold'>Profile</h1>}></Route>
             </Route>
           </Routes>
+          </main>
         </BrowserRouter>
       </AuthProvider>
     </NotesProvider>

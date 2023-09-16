@@ -1,5 +1,5 @@
 import { type SubmitHandler, useForm } from 'react-hook-form'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { type NoteInput } from '../interfaces/Notes'
 import { useNotes } from '../hooks/useNotes'
 
@@ -11,9 +11,14 @@ export const NoteFormPage: React.FC = () => {
   } = useForm<NoteInput>()
 
   const { createNote } = useNotes()
+  const navigate = useNavigate()
 
-  const onSubmit: SubmitHandler<NoteInput> = async (data) => {
-    await createNote(data)
+  const onSubmit: SubmitHandler<NoteInput> = (data) => {
+    createNote(data).then(() => {
+      navigate('/notes')
+    }).catch(err => {
+      console.log(err)
+    })
   }
 
   return (

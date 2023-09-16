@@ -50,7 +50,7 @@ export const NotesProvider: React.FC<Props> = ({ children }: Props) => {
     try {
       const res = await createNoteReq(note)
       if (res.status === 200) {
-        setNotes(res.data.data)
+        setNotes([res.data.data])
       }
     } catch (err) {
       console.log(err)
@@ -80,7 +80,8 @@ export const NotesProvider: React.FC<Props> = ({ children }: Props) => {
     try {
       const res = await deleteNoteReq(id)
       if (res.status === 200) {
-        setNotes(res.data.data)
+        const newNotes = notes.filter(note => note._id !== id)
+        setNotes(newNotes)
       }
     } catch (err) {
       console.log(err)
