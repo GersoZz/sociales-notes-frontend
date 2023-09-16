@@ -25,7 +25,7 @@ export const RegisterPage: React.FC = () => {
   }
 
   useEffect(() => {
-    if (isAuthenticated) navigate('/tasks')
+    if (isAuthenticated) navigate('/notes')
   }, [isAuthenticated])
 
   return (

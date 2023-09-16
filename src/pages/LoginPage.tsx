@@ -24,7 +24,7 @@ export const LoginPage: React.FC = () => {
   }
 
   useEffect(() => {
-    if (isAuthenticated) navigate('/tasks')
+    if (isAuthenticated) navigate('/notes')
   }, [isAuthenticated])
 
   return (

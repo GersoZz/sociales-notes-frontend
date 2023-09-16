@@ -1,7 +1,8 @@
-import { createContext, useState } from 'react'
-import { registerRequest, loginRequest } from '../api/auth'
+import { createContext, useState, useEffect } from 'react'
+import { registerRequest, loginRequest, verifyTokenRequest } from '../api/auth'
 import type { userSignIn, IUser, userSignUp } from '../interfaces/User'
 import { handleError } from '../utils/request'
+import Cookies from 'js-cookie'
 
 export interface AuthContextProps {
   user: IUser | null
@@ -9,6 +10,7 @@ export interface AuthContextProps {
   signin: (signInInput: userSignIn) => Promise<void>
   errors: string[]
   isAuthenticated: boolean
+  loadingVerify: boolean
 }
 
 export const AuthContext = createContext<AuthContextProps>({
@@ -16,7 +18,8 @@ export const AuthContext = createContext<AuthContextProps>({
   signup: async () => {},
   signin: async () => {},
   errors: [],
-  isAuthenticated: false
+  isAuthenticated: false,
+  loadingVerify: true
 })
 
 interface Props {
@@ -26,7 +29,36 @@ interface Props {
 export const AuthProvider: React.FC<Props> = ({ children }: Props) => {
   const [user, setUser] = useState<IUser | null>(null)
   const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [loadingVerify, setLoadingVerify] = useState(true)
+
   const [errors, setErrors] = useState<string[]>([])
+
+  useEffect(() => {
+    const checkLogin = async (): Promise<void> => {
+      const cookies = Cookies.get()
+      if (!Object.prototype.hasOwnProperty.call(cookies, 'token')) {
+        setIsAuthenticated(false)
+        setLoadingVerify(false)
+        return
+      }
+
+      try {
+        const res = await verifyTokenRequest()
+        if (res.status === 200) {
+          setIsAuthenticated(true)
+          setUser(res.data.data)
+          setLoadingVerify(false)
+          return
+        }
+        setIsAuthenticated(false)
+      } catch (error) {
+        setIsAuthenticated(false)
+      }
+      setLoadingVerify(false)
+    }
+
+    checkLogin().catch(err => { console.log(err) })
+  }, [])
 
   const signup = async (signUpInput: userSignUp): Promise<void> => {
     try {
@@ -54,7 +86,7 @@ export const AuthProvider: React.FC<Props> = ({ children }: Props) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, errors, signup, signin, isAuthenticated }}
+      value={{ user, errors, signup, signin, isAuthenticated, loadingVerify }}
     >
       {children}
     </AuthContext.Provider>
