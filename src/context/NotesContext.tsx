@@ -13,7 +13,7 @@ export interface NoteContextType {
   setNotes: React.Dispatch<React.SetStateAction<INote[]>>
   getNotes: () => Promise<void>
   createNote: (note: NoteInput) => Promise<void>
-  getNote: (id: string) => Promise<void>
+  getNote: (id: string) => Promise<INote | undefined>
   updateNote: (id: string, note: NoteUpd) => Promise<void>
   deleteNote: (id: string) => Promise<void>
 }
@@ -23,7 +23,7 @@ export const NotesContext = createContext<NoteContextType>({
   setNotes: () => {},
   getNotes: async () => {},
   createNote: async () => {},
-  getNote: async () => {},
+  getNote: async () => undefined,
   updateNote: async () => {},
   deleteNote: async () => {}
 })
@@ -56,26 +56,29 @@ export const NotesProvider: React.FC<Props> = ({ children }: Props) => {
       console.log(err)
     }
   }
+
   const updateNote = async (id: string, note: NoteUpd): Promise<void> => {
     try {
       const res = await updateNoteReq(id, note)
       if (res.status === 200) {
-        setNotes(res.data.data)
+        console.log(res.data.data)
       }
     } catch (err) {
       console.log(err)
     }
   }
-  const getNote = async (id: string): Promise<void> => {
+
+  const getNote = async (id: string): Promise<INote | undefined> => {
     try {
       const res = await getNoteReq(id)
       if (res.status === 200) {
-        setNotes(res.data.data)
+        return res.data.data
       }
     } catch (err) {
       console.log(err)
     }
   }
+
   const deleteNote = async (id: string): Promise<void> => {
     try {
       const res = await deleteNoteReq(id)

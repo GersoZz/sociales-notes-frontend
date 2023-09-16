@@ -23,7 +23,7 @@ function App (): JSX.Element {
             <Route element={<ProtectedRoute/>}>
               <Route path='/notes' element= {<NotesPage/>}></Route>
               <Route path='/add-notes' element= {<NoteFormPage/>}></Route>
-              <Route path='/notes/:id' element= {<h1 className='text-4xl font-bold'>Update Task</h1>}></Route>
+              <Route path='/notes/:id' element= {<NoteFormPage/>}></Route>
               <Route path='/profile' element= {<h1 className='text-4xl font-bold'>Profile</h1>}></Route>
             </Route>
           </Routes>

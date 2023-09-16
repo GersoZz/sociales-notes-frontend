@@ -89,7 +89,6 @@ export const AuthProvider: React.FC<Props> = ({ children }: Props) => {
   }
 
   const logout = (): void => {
-    console.log('😉😉')
     Cookies.remove('token')
     setUser(null)
     setIsAuthenticated(false)

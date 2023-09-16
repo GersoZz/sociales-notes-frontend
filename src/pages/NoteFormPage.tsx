@@ -1,5 +1,6 @@
+import { useEffect } from 'react'
 import { type SubmitHandler, useForm } from 'react-hook-form'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { type NoteInput } from '../interfaces/Notes'
 import { useNotes } from '../hooks/useNotes'
 
@@ -7,24 +8,48 @@ export const NoteFormPage: React.FC = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors }
+    formState: { errors },
+    setValue
   } = useForm<NoteInput>()
 
-  const { createNote } = useNotes()
+  const { createNote, getNote, updateNote } = useNotes()
   const navigate = useNavigate()
 
+  const { id } = useParams()
+
   const onSubmit: SubmitHandler<NoteInput> = (data) => {
-    createNote(data).then(() => {
-      navigate('/notes')
-    }).catch(err => {
-      console.log(err)
-    })
+    if (id !== undefined) {
+      updateNote(id, data).then(() => {
+        navigate('/notes')
+      }).catch(err => {
+        console.log(err)
+      })
+    } else {
+      createNote(data).then(() => {
+        navigate('/notes')
+      }).catch(err => {
+        console.log(err)
+      })
+    }
   }
+
+  useEffect(() => {
+    if (id !== undefined) {
+      getNote(id)
+        .then(note => {
+          if (note !== undefined) {
+            setValue('title', note?.title)
+            setValue('description', note?.description)
+          }
+        })
+        .catch(err => { console.log(err) })
+    }
+  }, [])
 
   return (
     <div className="h-[calc(100vh-100px)] flex items-center justify-center">
       <div className="bg-zinc-800 max-w-md w-full p-10 rounded-md">
-        <h1 className="text-2xl font-bold">Create New Note</h1>
+        <h1 className="text-2xl font-bold">{ id !== undefined ? 'Update Note' : 'Create New Note'}</h1>
 
         <form onSubmit={handleSubmit(onSubmit)}>
           <input
@@ -53,7 +78,7 @@ export const NoteFormPage: React.FC = () => {
             className="bg-indigo-500 px-4 py-1 rounded-md my-2 disabled:bg-indigo-300"
             type="submit"
           >
-            Create
+            { id !== undefined ? 'Update' : 'Create'}
           </button>
         </form>
         <p className="flex gap-x-2 flex-row-reverse">

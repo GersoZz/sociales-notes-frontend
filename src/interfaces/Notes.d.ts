@@ -1,7 +1,7 @@
 export interface NoteInput {
   title: string
   description: string
-  date: string
+  date?: string
 }
 
 export interface NoteUpd {
