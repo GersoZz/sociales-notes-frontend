@@ -3,6 +3,9 @@ import { type SubmitHandler, useForm } from 'react-hook-form'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { type NoteInput } from '../interfaces/Notes'
 import { useNotes } from '../hooks/useNotes'
+import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+dayjs.extend(utc)
 
 export const NoteFormPage: React.FC = () => {
   const {
@@ -18,14 +21,19 @@ export const NoteFormPage: React.FC = () => {
   const { id } = useParams()
 
   const onSubmit: SubmitHandler<NoteInput> = (data) => {
+    const validatedData = {
+      ...data,
+      date: data.date !== '' ? dayjs.utc(data.date).format() : dayjs.utc().format()
+    }
+
     if (id !== undefined) {
-      updateNote(id, data).then(() => {
+      updateNote(id, validatedData).then(() => {
         navigate('/notes')
       }).catch(err => {
         console.log(err)
       })
     } else {
-      createNote(data).then(() => {
+      createNote(validatedData).then(() => {
         navigate('/notes')
       }).catch(err => {
         console.log(err)
@@ -40,6 +48,7 @@ export const NoteFormPage: React.FC = () => {
           if (note !== undefined) {
             setValue('title', note?.title)
             setValue('description', note?.description)
+            setValue('date', dayjs.utc(note?.date).format('YYYY-MM-DD'))
           }
         })
         .catch(err => { console.log(err) })
@@ -67,12 +76,12 @@ export const NoteFormPage: React.FC = () => {
             className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md my-2"
             placeholder="Description"
           />
-          {/*           <input
+          <input
             type="date"
             {...register('date')}
             className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md my-2"
             placeholder="Date"
-          /> */}
+          />
 
           <button
             className="bg-indigo-500 px-4 py-1 rounded-md my-2 disabled:bg-indigo-300"

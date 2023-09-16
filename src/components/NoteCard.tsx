@@ -1,6 +1,9 @@
 import { Link } from 'react-router-dom'
 import { type INote } from '../interfaces/Notes'
 import { useNotes } from '../hooks/useNotes'
+import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+dayjs.extend(utc)
 
 interface NoteCardProps {
   note: INote
@@ -25,12 +28,7 @@ export const NoteCard: React.FC<NoteCardProps> = ({ note }) => {
       </header>
       <p className="text-slate-300">{note.description}</p>
       <p>
-        {note.date !== '' &&
-          new Date(note.date).toLocaleDateString('es-ES', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric'
-          })}
+        {dayjs.utc(note.date).format('DD/MM/YY')}
       </p>
     </div>
   )
