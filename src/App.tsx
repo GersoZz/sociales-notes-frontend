@@ -26,6 +26,7 @@ function App (): JSX.Element {
               <Route path='/notes/:id' element= {<NoteFormPage/>}></Route>
               <Route path='/profile' element= {<h1 className='text-4xl font-bold'>Profile</h1>}></Route>
             </Route>
+            <Route path='*' element= {<h1 className='text-4xl font-bold'>Page Not Found</h1>}></Route>
           </Routes>
           </main>
         </BrowserRouter>
